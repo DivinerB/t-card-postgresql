@@ -42,7 +42,7 @@ func StoreJob(ctx *gin.Context) {
 	})
 }
 
-func GetAllJobsWithStack(ctx *gin.Context) {
+func GetAllJobsWithStacks(ctx *gin.Context) {
 	var jobs []models.Job
 	errDb := database.DB.Table("jobs").Preload("Stacks").Find(&jobs).Error
 	if errDb != nil {

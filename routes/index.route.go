@@ -31,11 +31,12 @@ func InitRoute(app *gin.Engine) {
 	// ROUTE JOB
 	jobRoute := route.Group("job")
 	jobRoute.POST("/", middleware.RequireAuth, middleware.RequireEmployer, job_controller.StoreJob)
-	jobRoute.GET("/", job_controller.GetAllJobsWithStack)
+	jobRoute.GET("/", job_controller.GetAllJobsWithStacks)
 
 	// ROUTE JOB
 	stackRoute := route.Group("stack")
 	stackRoute.POST("/", middleware.RequireAuth, stack_controller.StoreStack)
+	stackRoute.GET("/", stack_controller.GetAllStacksWithJobs)
 
 	// ROUTE BOOK
 	route.GET("/book", book_controller.GetAllBook)
