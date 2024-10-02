@@ -13,4 +13,5 @@ type Job struct {
 	UpdatedAt   *time.Time `json:"updatedAt"`
 	UserID      *int       `json:"user_id,omitempty"`
 	Owner       *User      `gorm:"foreignKey:UserID"`
+	Stacks      []*Stack   `gorm:"many2many:job_stacks"`
 }

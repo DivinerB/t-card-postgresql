@@ -1,4 +1,4 @@
-package jobstack_controller
+package stack_controller
 
 import (
 	"net/http"
@@ -9,20 +9,20 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
-func StoreJobStack(ctx *gin.Context) {
-	var jobStackReq requests.JobStackRequest
-	if errReq := ctx.ShouldBindJSON(&jobStackReq); errReq != nil {
+func StoreStack(ctx *gin.Context) {
+	var stackReq requests.StackRequest
+	if errReq := ctx.ShouldBindJSON(&stackReq); errReq != nil {
 		ctx.JSON(http.StatusBadRequest, gin.H{
 			"message": errReq.Error(),
 		})
 		return
 	}
 
-	jobStack := new(models.Job_Stack)
-	jobStack.Name = &jobStackReq.Name
-	jobStack.Logo = &jobStackReq.Logo
+	stack := new(models.Stack)
+	stack.Name = &stackReq.Name
+	stack.Logo = &stackReq.Logo
 
-	errDb := database.DB.Table("job_stacks").Create(&jobStack).Error
+	errDb := database.DB.Table("job_stacks").Create(&stack).Error
 	if errDb != nil {
 		ctx.JSON(http.StatusInternalServerError, gin.H{
 			"message": "cannot create data.",
@@ -32,6 +32,6 @@ func StoreJobStack(ctx *gin.Context) {
 
 	ctx.JSON(http.StatusOK, gin.H{
 		"message": "data saved successfully.",
-		"data":    jobStack,
+		"data":    stack,
 	})
 }

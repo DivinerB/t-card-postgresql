@@ -1,6 +1,6 @@
 package requests
 
-type JobStackRequest struct {
+type StackRequest struct {
 	Name string `json:"name" binding:"required"`
 	Logo string `json:"logo"`
 }
