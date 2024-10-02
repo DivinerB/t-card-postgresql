@@ -29,7 +29,7 @@ func InitRoute(app *gin.Engine) {
 
 	// ROUTE JOB
 	jobRoute := route.Group("job")
-	jobRoute.POST("/", middleware.RequireAuth, job_controller.StoreJob)
+	jobRoute.POST("/", middleware.RequireAuth, middleware.RequireEmployer, job_controller.StoreJob)
 
 	// ROUTE BOOK
 	route.GET("/book", book_controller.GetAllBook)

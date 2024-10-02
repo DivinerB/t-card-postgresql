@@ -54,3 +54,16 @@ func RequireAuth(ctx *gin.Context) {
 	// Continue
 	ctx.Next()
 }
+
+func RequireEmployer(ctx *gin.Context) {
+	user, _ := ctx.Get("user")
+	userData := user.(models.User)
+	if *userData.Role == "employer" {
+		ctx.Next()
+	} else {
+		ctx.AbortWithStatusJSON(http.StatusUnauthorized, gin.H{
+			"message": "only employer can post jobs",
+		})
+		return
+	}
+}
