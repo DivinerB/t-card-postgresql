@@ -10,6 +10,7 @@ import (
 
 	"github.com/gin-gonic/gin"
 	"github.com/golang-jwt/jwt/v5"
+	"golang.org/x/crypto/bcrypt"
 )
 
 func Login(ctx *gin.Context) {
@@ -38,15 +39,17 @@ func Login(ctx *gin.Context) {
 
 	if user.TID == nil {
 		ctx.AbortWithStatusJSON(http.StatusNotFound, gin.H{
-			"message": "credential not valid.",
+			"message": "user not valid.",
 		})
 		return
 	}
 
-	// Check Password
-	if loginReq.Password != *user.Password {
-		ctx.AbortWithStatusJSON(http.StatusNotFound, gin.H{
-			"message": "credential not valid.",
+	// Compare the password
+	errPsw := bcrypt.CompareHashAndPassword([]byte(*user.Password), []byte(loginReq.Password))
+
+	if errPsw != nil {
+		ctx.JSON(http.StatusBadRequest, gin.H{
+			"message": "password not valid",
 		})
 		return
 	}
