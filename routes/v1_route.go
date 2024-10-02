@@ -12,8 +12,8 @@ func v1Route(routeGrup *gin.RouterGroup) {
 	route := routeGrup
 
 	// ROUTE YANG MEMBUTUHKAN MIDDLEWARE DAPAT DI GRUPKAN
-	authRoute := route.Group("file", middleware.AuthMiddleware)
+	authRoute := route.Group("file", middleware.RequireAuth)
 	authRoute.DELETE("/:filename", file_controller.HandleRemoveFile)
 	authRoute.POST("/", file_controller.HandleUploadFile)
-	authRoute.POST("/middleware", middleware.AuthMiddleware, middleware.UploadFile, file_controller.SendStatus)
+	authRoute.POST("/middleware", middleware.RequireAuth, middleware.UploadFile, file_controller.SendStatus)
 }

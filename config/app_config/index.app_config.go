@@ -5,7 +5,7 @@ import "os"
 var APP_PORT = ":4000"
 var STATIC_ROUTE = "/public"
 var STATIC_DIR = "./public"
-var SECRET_KEY = "SECRET_KEY"
+var SECRET_KEY = "cardsecrete_kiiee"
 
 func InitAppConfig() {
 	portEnv := os.Getenv("APP_PORT")

@@ -55,10 +55,8 @@ func Login(ctx *gin.Context) {
 	}
 
 	claims := jwt.MapClaims{
-		"id":   user.ID,
-		"name": user.Name,
-		"tid":  user.TID,
-		"exp":  time.Now().Add(time.Hour * 24).Unix(),
+		"sub": user.ID,
+		"exp": time.Now().Add(time.Hour * 24).Unix(),
 	}
 
 	token, errToken := utils.GenerateToken(&claims)
@@ -70,8 +68,13 @@ func Login(ctx *gin.Context) {
 		return
 	}
 
+	// set cookie
+	ctx.SetSameSite(http.SameSiteLaxMode)
+	ctx.SetCookie("Authorization", token, 3600*24*30, "", "", false, true)
+
+	// send it as a response
 	ctx.JSON(http.StatusOK, gin.H{
-		"message": "login succesfully",
+		"message": "Successfully logged in",
 		"token":   token,
 	})
 }

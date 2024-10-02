@@ -84,7 +84,7 @@ func StoreUser(ctx *gin.Context) {
 	hash, err := bcrypt.GenerateFromPassword([]byte(userReq.Password), 10)
 	if err != nil {
 		ctx.JSON(http.StatusInternalServerError, gin.H{
-			"message": "can't hash password.",
+			"message": "cannot hash password.",
 		})
 		return
 	}
@@ -100,7 +100,7 @@ func StoreUser(ctx *gin.Context) {
 
 	if errDb != nil {
 		ctx.JSON(http.StatusInternalServerError, gin.H{
-			"message": "can't create data.",
+			"message": "cannot create data.",
 		})
 		return
 	}

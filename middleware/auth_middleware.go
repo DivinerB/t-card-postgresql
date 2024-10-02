@@ -3,70 +3,54 @@ package middleware
 import (
 	"fmt"
 	"net/http"
-	"strings"
-	"t-card/utils"
+	"t-card/config/app_config"
+	"t-card/database"
+	"t-card/models"
+	"time"
 
 	"github.com/gin-gonic/gin"
+	"github.com/golang-jwt/jwt/v5"
 )
 
-func AuthMiddleware(ctx *gin.Context) {
-	bearerToken := ctx.GetHeader("Authorization")
-
-	if !strings.Contains(bearerToken, "Bearer") {
-		ctx.AbortWithStatusJSON(http.StatusBadRequest, gin.H{
-			"message": "invalid token.",
-		})
-
-		return
-	}
-
-	token := strings.Replace(bearerToken, "Bearer ", "", -1)
-
-	if token == "" {
-		ctx.AbortWithStatusJSON(http.StatusUnauthorized, gin.H{
-			"message": "unauthorized",
-		})
-
-		return
-	}
-
-	claimsData, err := utils.DecodeToken(token)
+func RequireAuth(ctx *gin.Context) {
+	// Get the cookie off req
+	tokenString, err := ctx.Cookie("Authorization")
 
 	if err != nil {
-		ctx.AbortWithStatusJSON(http.StatusUnauthorized, gin.H{
-			"message": "unauthorized",
-		})
-		return
+		ctx.AbortWithStatus(http.StatusUnauthorized)
 	}
 
-	ctx.Set("claimsData", claimsData)
-	ctx.Set("user_id", claimsData["id"])
-	ctx.Set("user_name", claimsData["name"])
-	ctx.Set("email", claimsData["email"])
+	// Decode the cookie
+	token, err := jwt.Parse(tokenString, func(token *jwt.Token) (interface{}, error) {
+		// Don't forget to validate the alg is what you expect:
+		if _, ok := token.Method.(*jwt.SigningMethodHMAC); !ok {
+			return nil, fmt.Errorf("Unexpected signing method: %v", token.Header["alg"])
+		}
 
-	ctx.Next()
-}
+		// hmacSampleSecret is a []byte containing your secret, e.g. []byte("my_secret_key")
+		return []byte(app_config.SECRET_KEY), nil
+	})
 
-func TokenMiddleware(ctx *gin.Context) {
-	token := ctx.GetHeader("Authorization")
+	if claims, ok := token.Claims.(jwt.MapClaims); ok && token.Valid {
+		// Check the exp
+		if float64(time.Now().Unix()) > claims["exp"].(float64) {
+			ctx.AbortWithStatus(http.StatusUnauthorized)
+		}
+		// Find the user with token sub
+		var user models.User
+		database.DB.First(&user, claims["sub"])
 
-	fmt.Println(token)
+		if *user.ID == 0 {
+			ctx.AbortWithStatus(http.StatusUnauthorized)
+		}
 
-	if token == "" {
-		ctx.AbortWithStatusJSON(http.StatusUnauthorized, gin.H{
-			"message": "unauthorized",
-		})
+		// Attach user to the req
+		ctx.Set("user", user)
 
-		return
+	} else {
+		ctx.AbortWithStatus(http.StatusUnauthorized)
 	}
 
-	if token != "123" {
-		ctx.AbortWithStatusJSON(http.StatusUnauthorized, gin.H{
-			"message": "token not valid.",
-		})
-
-		return
-	}
-
+	// Continue
 	ctx.Next()
 }

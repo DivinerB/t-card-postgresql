@@ -3,8 +3,10 @@ package routes
 import (
 	"t-card/config/app_config"
 	"t-card/controllers/book_controller"
+	"t-card/controllers/job_controller"
 	"t-card/controllers/user_controller"
 	"t-card/controllers/user_controller/auth_contoller"
+	"t-card/middleware"
 
 	"github.com/gin-gonic/gin"
 )
@@ -25,12 +27,16 @@ func InitRoute(app *gin.Engine) {
 	userRoute.PATCH(":id", user_controller.UpdateUserById)
 	userRoute.DELETE("/:id", user_controller.DeleteUserById)
 
+	// ROUTE JOB
+	jobRoute := route.Group("job")
+	jobRoute.POST("/", middleware.RequireAuth, job_controller.StoreJob)
+
 	// ROUTE BOOK
 	route.GET("/book", book_controller.GetAllBook)
 
 	// ROUTE FILE
 
-	v1Route(route)
+	// v1Route(route)
 
 	// LOGIN
 	route.POST("/login", auth_contoller.Login)
