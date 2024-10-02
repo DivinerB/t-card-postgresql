@@ -27,7 +27,7 @@ func Login(ctx *gin.Context) {
 
 	user := new(models.User)
 
-	errUser := database.DB.Table("users").Where("tid = ?", loginReq.TID).Find(&user).Error
+	errUser := database.DB.Table("users").Where("t_id = ?", loginReq.TID).Find(&user).Error
 
 	if errUser != nil {
 		ctx.AbortWithStatusJSON(http.StatusNotFound, gin.H{
@@ -44,7 +44,7 @@ func Login(ctx *gin.Context) {
 	}
 
 	// Check Password
-	if loginReq.Password != "12345" {
+	if loginReq.Password != *user.Password {
 		ctx.AbortWithStatusJSON(http.StatusNotFound, gin.H{
 			"message": "credential not valid.",
 		})
@@ -54,7 +54,7 @@ func Login(ctx *gin.Context) {
 	claims := jwt.MapClaims{
 		"id":   user.ID,
 		"name": user.Name,
-		"TID":  user.TID,
+		"tid":  user.TID,
 		"exp":  time.Now().Add(time.Hour * 24).Unix(),
 	}
 

@@ -9,6 +9,7 @@ import (
 	"t-card/responses"
 
 	"github.com/gin-gonic/gin"
+	"golang.org/x/crypto/bcrypt"
 )
 
 func GetAllUser(ctx *gin.Context) {
@@ -68,11 +69,11 @@ func StoreUser(ctx *gin.Context) {
 
 	userAlreadyExist := new(models.User)
 
-	database.DB.Table("users").Where("tid=?", userReq.TID).First(&userAlreadyExist)
+	database.DB.Table("users").Where("t_id=?", userReq.TID).First(&userAlreadyExist)
 
 	if userAlreadyExist.TID != nil {
 		ctx.AbortWithStatusJSON(http.StatusBadRequest, gin.H{
-			"message": "user already used.",
+			"message": "tid already used.",
 		})
 
 		return
@@ -80,9 +81,18 @@ func StoreUser(ctx *gin.Context) {
 
 	user := new(models.User)
 
+	hash, err := bcrypt.GenerateFromPassword([]byte(userReq.Password), 10)
+	if err != nil {
+		ctx.JSON(http.StatusInternalServerError, gin.H{
+			"message": "can't hash password.",
+		})
+		return
+	}
+	hashStr := string(hash)
+
 	user.Name = &userReq.Name
 	user.TID = &userReq.TID
-	user.Password = &userReq.Password
+	user.Password = &hashStr
 	user.Role = &userReq.Role
 	user.Birthday = &userReq.Birthday
 
