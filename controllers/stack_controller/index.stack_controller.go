@@ -22,7 +22,7 @@ func StoreStack(ctx *gin.Context) {
 	stack.Name = &stackReq.Name
 	stack.Logo = &stackReq.Logo
 
-	errDb := database.DB.Table("job_stacks").Create(&stack).Error
+	errDb := database.DB.Table("stacks").Create(&stack).Error
 	if errDb != nil {
 		ctx.JSON(http.StatusInternalServerError, gin.H{
 			"message": "cannot create data.",

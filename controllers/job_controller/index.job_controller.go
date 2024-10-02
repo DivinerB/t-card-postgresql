@@ -42,8 +42,18 @@ func StoreJob(ctx *gin.Context) {
 	})
 }
 
-func GetAllJobs(ctx *gin.Context) {
+func GetAllJobsWithStack(ctx *gin.Context) {
+	var jobs []models.Job
+	errDb := database.DB.Table("jobs").Preload("Stacks").Find(&jobs).Error
+	if errDb != nil {
+		ctx.JSON(http.StatusInternalServerError, gin.H{
+			"message": "cannot create data.",
+		})
+		return
+	}
+
 	ctx.JSON(http.StatusOK, gin.H{
-		"message": "Get All Job Function",
+		"message": "data saved successfully.",
+		"data":    jobs,
 	})
 }
