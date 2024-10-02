@@ -66,13 +66,13 @@ func StoreUser(ctx *gin.Context) {
 		return
 	}
 
-	userEmailExist := new(models.User)
+	userAlreadyExist := new(models.User)
 
-	database.DB.Table("users").Where("email=?", userReq.Email).First(&userEmailExist)
+	database.DB.Table("users").Where("tid=?", userReq.TID).First(&userAlreadyExist)
 
-	if userEmailExist.Email != nil {
+	if userAlreadyExist.TID != nil {
 		ctx.AbortWithStatusJSON(http.StatusBadRequest, gin.H{
-			"message": "email already used.",
+			"message": "user already used.",
 		})
 
 		return
@@ -81,10 +81,10 @@ func StoreUser(ctx *gin.Context) {
 	user := new(models.User)
 
 	user.Name = &userReq.Name
-	user.Email = &userReq.Email
+	user.TID = &userReq.TID
 	user.Password = &userReq.Password
-	user.Address = &userReq.Address
-	user.BornDate = &userReq.BornDate
+	user.Role = &userReq.Role
+	user.Birthday = &userReq.Birthday
 
 	errDb := database.DB.Table("users").Create(&user).Error
 
@@ -108,7 +108,7 @@ func UpdateUserById(ctx *gin.Context) {
 
 	userReq := new(requests.UserRequest)
 
-	userEmailExist := new(models.User)
+	userAlreadyExist := new(models.User)
 
 	if errReq := ctx.ShouldBindJSON(&userReq); errReq != nil {
 		ctx.JSON(http.StatusBadRequest, gin.H{
@@ -135,9 +135,9 @@ func UpdateUserById(ctx *gin.Context) {
 		return
 	}
 
-	errUserEmailExist := database.DB.Table("users").Where("email=?", userReq.Email).Find(&userEmailExist).Error
+	errUserAlreadyExist := database.DB.Table("users").Where("tid=?", userReq.TID).Find(&userAlreadyExist).Error
 
-	if errUserEmailExist != nil {
+	if errUserAlreadyExist != nil {
 		ctx.JSON(http.StatusInternalServerError, gin.H{
 			"message": "internal server error.",
 		})
@@ -145,18 +145,18 @@ func UpdateUserById(ctx *gin.Context) {
 		return
 	}
 
-	if userEmailExist.Email != nil && *user.ID != *userEmailExist.ID {
+	if userAlreadyExist.TID != nil && *user.ID != *userAlreadyExist.ID {
 		ctx.JSON(http.StatusBadRequest, gin.H{
-			"message": "email already used.",
+			"message": "TID already used.",
 		})
 		return
 	}
 
 	user.Name = &userReq.Name
-	user.Email = &userReq.Email
+	user.TID = &userReq.TID
 	user.Password = &userReq.Password
-	user.Address = &userReq.Address
-	user.BornDate = &userReq.BornDate
+	user.Role = &userReq.Role
+	user.Birthday = &userReq.Birthday
 
 	errUpdate := database.DB.Table("users").Where("id=?", id).Updates(&user).Error
 
@@ -169,10 +169,10 @@ func UpdateUserById(ctx *gin.Context) {
 
 	userResponse := responses.UserResponse{
 		Name:     user.Name,
-		Email:    user.Email,
+		TID:      user.TID,
 		Password: user.Password,
-		Address:  user.Address,
-		BornDate: user.BornDate,
+		Role:     user.Role,
+		Birthday: user.Birthday,
 	}
 	ctx.JSON(http.StatusOK, gin.H{
 		"message": "data updated successfully.",

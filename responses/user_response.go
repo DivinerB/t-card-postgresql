@@ -4,8 +4,8 @@ import "time"
 
 type UserResponse struct {
 	Name     *string    `json:"name"`
-	Address  *string    `json:"address"`
-	Email    *string    `json:"email"`
+	TID      *string    `json:"tid"`
+	Role     *string    `json:"role"`
 	Password *string    `json:"password"`
-	BornDate *time.Time `json:"born_date"`
+	Birthday *time.Time `json:"birthday"`
 }

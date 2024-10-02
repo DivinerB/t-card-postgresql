@@ -4,9 +4,9 @@ import "time"
 
 type User struct {
 	ID       *int       `json:"id"`
+	TID      *string    `json:"tid"`
 	Name     *string    `json:"name"`
-	Address  *string    `json:"address"`
-	Email    *string    `json:"email"`
 	Password *string    `json:"password"`
-	BornDate *time.Time `json:"born_date"`
+	Role     *string    `json:"role"`
+	Birthday *time.Time `json:"birthday"`
 }

@@ -10,9 +10,9 @@ var DB_PORT = "5432"
 
 var DB_NAME = "t-card"
 
-var DB_USER = "postgresql"
+var DB_USER = "postgres"
 
-var DB_PASSWORD = "t-cardsecrete_kiiee"
+var DB_PASSWORD = "qwe123QWE!@#"
 
 func InitDatabaseConfig() {
 	driverEnv := os.Getenv("DB_DRIVER")

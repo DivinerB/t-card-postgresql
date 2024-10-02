@@ -1,10 +1,10 @@
 CREATE TABLE users (
     id serial NOT NULL PRIMARY KEY,
+    tid VARCHAR(255),
     name VARCHAR(255),
-    address VARCHAR(255),
-    email VARCHAR(255),
+    role VARCHAR(255),
     password VARCHAR(255),
-    born_date TIMESTAMP
+    birthday TIMESTAMP
 );
 
 -- migrate -database "postgres://kristofer:mysecret@127.0.0.1:5432/joglo_dev?sslmode=false" -path database/migrations up
