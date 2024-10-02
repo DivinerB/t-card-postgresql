@@ -16,7 +16,7 @@ func GetAllUser(ctx *gin.Context) {
 
 	users := new([]models.User)
 
-	if err := database.DB.Table("users").Find(&users).Error; err != nil {
+	if err := database.DB.Table("users").Preload("Applications").Find(&users).Error; err != nil {
 		ctx.AbortWithStatusJSON(http.StatusInternalServerError, gin.H{
 			"message": "Internal server error",
 		})

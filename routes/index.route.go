@@ -42,6 +42,7 @@ func InitRoute(app *gin.Engine) {
 	// ROUTE JOB
 	applicationRoute := route.Group("application")
 	applicationRoute.POST("/", middleware.RequireAuth, middleware.RequireFreelancer, application_controller.StoreApplication)
+	applicationRoute.PUT("/:id", middleware.RequireAuth, middleware.RequireEmployer, application_controller.UpdateApplication)
 	// applicationRoute.GET("/", stack_controller.GetAllStacksWithJobs)
 	// ROUTE BOOK
 	route.GET("/book", book_controller.GetAllBook)

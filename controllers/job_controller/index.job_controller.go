@@ -44,7 +44,7 @@ func StoreJob(ctx *gin.Context) {
 
 func GetAllJobsWithStacks(ctx *gin.Context) {
 	var jobs []models.Job
-	errDb := database.DB.Table("jobs").Preload("Owner").Find(&jobs).Error
+	errDb := database.DB.Table("jobs").Preload("Applications").Preload("Applications.Applicant").Find(&jobs).Error
 	if errDb != nil {
 		ctx.JSON(http.StatusInternalServerError, gin.H{
 			"message": "cannot load data.",
