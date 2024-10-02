@@ -73,7 +73,7 @@ func StoreUser(ctx *gin.Context) {
 
 	if userAlreadyExist.TID != nil {
 		ctx.AbortWithStatusJSON(http.StatusBadRequest, gin.H{
-			"message": "tid already used.",
+			"message": "telegram id already used.",
 		})
 
 		return

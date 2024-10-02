@@ -2,9 +2,9 @@ package application_controller
 
 import (
 	"net/http"
-	"t-card/database"
 	"t-card/dtos/requests"
 	"t-card/models"
+	"t-card/repository"
 
 	"github.com/gin-gonic/gin"
 )
@@ -24,7 +24,20 @@ func StoreApplication(ctx *gin.Context) {
 	app.JobID = &appReq.JobID
 	app.Applicant = &user_data
 
-	errDb := database.DB.Table("applications").Create(&app).Error
+	existApp, err := repository.FindApplicationByJobIDAndUserID(appReq.JobID, *user_data.ID)
+
+	if err != nil {
+		println(err)
+	}
+
+	if existApp.ID != nil {
+		ctx.AbortWithStatusJSON(http.StatusInsufficientStorage, gin.H{
+			"message": "you already applicated.",
+		})
+		return
+	}
+
+	appr, errDb := repository.StoreApplication(*app)
 	if errDb != nil {
 		ctx.JSON(http.StatusInternalServerError, gin.H{
 			"message": "cannot create data.",
@@ -34,6 +47,6 @@ func StoreApplication(ctx *gin.Context) {
 
 	ctx.JSON(http.StatusOK, gin.H{
 		"message": "data saved successfully.",
-		"data":    app,
+		"data":    appr,
 	})
 }
