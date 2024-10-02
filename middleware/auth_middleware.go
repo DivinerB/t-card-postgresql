@@ -66,8 +66,20 @@ func RequireEmployer(ctx *gin.Context) {
 		ctx.Next()
 	} else {
 		ctx.AbortWithStatusJSON(http.StatusUnauthorized, gin.H{
-			"message": "only employer can post jobs",
+			"message": "only employer can this work",
 		})
 		return
+	}
+}
+
+func RequireFreelancer(ctx *gin.Context) {
+	user, _ := ctx.Get("user")
+	userData := user.(models.User)
+	if *userData.Role == "freelancer" {
+		ctx.Next()
+	} else {
+		ctx.AbortWithStatusJSON(http.StatusUnauthorized, gin.H{
+			"message": "only freelancer can this work",
+		})
 	}
 }

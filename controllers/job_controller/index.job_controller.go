@@ -26,7 +26,7 @@ func StoreJob(ctx *gin.Context) {
 	job.Salary = &jobReq.Salary
 	job.Money = &jobReq.Money
 	job.Geoposition = &jobReq.Geoposition
-	job.UserID = user_data.ID
+	job.Owner = &user_data
 
 	errDb := database.DB.Table("jobs").Create(&job).Error
 	if errDb != nil {
@@ -44,16 +44,16 @@ func StoreJob(ctx *gin.Context) {
 
 func GetAllJobsWithStacks(ctx *gin.Context) {
 	var jobs []models.Job
-	errDb := database.DB.Table("jobs").Preload("Stacks").Find(&jobs).Error
+	errDb := database.DB.Table("jobs").Preload("Owner").Find(&jobs).Error
 	if errDb != nil {
 		ctx.JSON(http.StatusInternalServerError, gin.H{
-			"message": "cannot create data.",
+			"message": "cannot load data.",
 		})
 		return
 	}
 
 	ctx.JSON(http.StatusOK, gin.H{
-		"message": "data saved successfully.",
+		"message": "data loaded successfully.",
 		"data":    jobs,
 	})
 }

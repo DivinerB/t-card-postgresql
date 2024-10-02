@@ -2,6 +2,7 @@ package routes
 
 import (
 	"t-card/config/app_config"
+	"t-card/controllers/application_controller"
 	"t-card/controllers/book_controller"
 	"t-card/controllers/job_controller"
 	"t-card/controllers/stack_controller"
@@ -35,9 +36,13 @@ func InitRoute(app *gin.Engine) {
 
 	// ROUTE JOB
 	stackRoute := route.Group("stack")
-	stackRoute.POST("/", middleware.RequireAuth, stack_controller.StoreStack)
+	stackRoute.POST("/", middleware.RequireAuth, middleware.RequireFreelancer, stack_controller.StoreStack)
 	stackRoute.GET("/", stack_controller.GetAllStacksWithJobs)
 
+	// ROUTE JOB
+	applicationRoute := route.Group("application")
+	applicationRoute.POST("/", middleware.RequireAuth, middleware.RequireFreelancer, application_controller.StoreApplication)
+	// applicationRoute.GET("/", stack_controller.GetAllStacksWithJobs)
 	// ROUTE BOOK
 	route.GET("/book", book_controller.GetAllBook)
 

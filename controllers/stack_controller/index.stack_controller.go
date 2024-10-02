@@ -41,13 +41,13 @@ func GetAllStacksWithJobs(ctx *gin.Context) {
 	errDb := database.DB.Table("stacks").Preload("Jobs").Find(&stacks).Error
 	if errDb != nil {
 		ctx.JSON(http.StatusInternalServerError, gin.H{
-			"message": "cannot create data.",
+			"message": "cannot load data.",
 		})
 		return
 	}
 
 	ctx.JSON(http.StatusOK, gin.H{
-		"message": "data saved successfully.",
+		"message": "data loaded successfully.",
 		"data":    stacks,
 	})
 }
