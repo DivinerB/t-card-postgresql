@@ -4,6 +4,7 @@ import (
 	"t-card/config/app_config"
 	"t-card/controllers/book_controller"
 	"t-card/controllers/job_controller"
+	jobstack_controller "t-card/controllers/job_stack_controller"
 	"t-card/controllers/user_controller"
 	"t-card/controllers/user_controller/auth_contoller"
 	"t-card/middleware"
@@ -30,6 +31,10 @@ func InitRoute(app *gin.Engine) {
 	// ROUTE JOB
 	jobRoute := route.Group("job")
 	jobRoute.POST("/", middleware.RequireAuth, middleware.RequireEmployer, job_controller.StoreJob)
+
+	// ROUTE JOB
+	jobStackRoute := route.Group("jobstack")
+	jobStackRoute.POST("/", middleware.RequireAuth, jobstack_controller.StoreJobStack)
 
 	// ROUTE BOOK
 	route.GET("/book", book_controller.GetAllBook)

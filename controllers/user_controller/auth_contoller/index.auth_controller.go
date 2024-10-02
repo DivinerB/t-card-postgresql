@@ -3,8 +3,8 @@ package auth_contoller
 import (
 	"net/http"
 	"t-card/database"
+	"t-card/dtos/requests"
 	"t-card/models"
-	"t-card/requests"
 	"t-card/utils"
 	"time"
 

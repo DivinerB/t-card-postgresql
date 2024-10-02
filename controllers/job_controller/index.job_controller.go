@@ -3,8 +3,8 @@ package job_controller
 import (
 	"net/http"
 	"t-card/database"
+	"t-card/dtos/requests"
 	"t-card/models"
-	"t-card/requests"
 
 	"github.com/gin-gonic/gin"
 )
@@ -19,7 +19,6 @@ func StoreJob(ctx *gin.Context) {
 	}
 	user, _ := ctx.Get("user")
 	user_data := user.(models.User)
-	println(*user_data.ID)
 
 	job := new(models.Job)
 	job.Title = &jobReq.Title

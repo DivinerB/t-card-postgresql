@@ -4,9 +4,9 @@ import (
 	"net/http"
 	"strconv"
 	"t-card/database"
+	"t-card/dtos/requests"
+	"t-card/dtos/responses"
 	"t-card/models"
-	"t-card/requests"
-	"t-card/responses"
 
 	"github.com/gin-gonic/gin"
 	"golang.org/x/crypto/bcrypt"
