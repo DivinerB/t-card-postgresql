@@ -11,4 +11,5 @@ type User struct {
 	Birthday     *time.Time     `json:"birthday"`
 	Jobs         []*Job         `gorm:"foreignKey:UserID"`
 	Applications []*Application `gorm:"foriegnKey:UserID"`
+	Bookmarks    []*Job         `gorm:"many2many:bookmarks"`
 }

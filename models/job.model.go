@@ -14,5 +14,6 @@ type Job struct {
 	Owner        *User          `gorm:"foreignKey:UserID"`
 	Stacks       []*Stack       `gorm:"many2many:job_stacks"`
 	Applications []*Application `gorm:"foreignKey:UserID"`
+	Bookmarker   []*User        `gorm:"many2many:bookmarks"`
 	UserID       *uint
 }

@@ -5,6 +5,7 @@ import (
 	"t-card/controllers/application_controller"
 	"t-card/controllers/book_controller"
 	"t-card/controllers/job_controller"
+	"t-card/controllers/misc_controller"
 	"t-card/controllers/stack_controller"
 	"t-card/controllers/user_controller"
 	"t-card/controllers/user_controller/auth_contoller"
@@ -33,6 +34,7 @@ func InitRoute(app *gin.Engine) {
 	jobRoute := route.Group("job")
 	jobRoute.POST("/", middleware.RequireAuth, middleware.RequireEmployer, job_controller.StoreJob)
 	jobRoute.GET("/", job_controller.GetAllJobsWithStacks)
+	jobRoute.GET("/:id/bookmark", middleware.RequireAuth, job_controller.SetBookmark)
 
 	// ROUTE JOB
 	stackRoute := route.Group("stack")
@@ -47,7 +49,8 @@ func InitRoute(app *gin.Engine) {
 
 	// ROUTE BOOK
 	route.GET("/book", book_controller.GetAllBook)
-
+	route.GET("/feedback", middleware.RequireAuth, misc_controller.GetAllFeedbackWithUser)
+	route.POST("/feedback", middleware.RequireAuth, misc_controller.PostFeedback)
 	// ROUTE FILE
 
 	// v1Route(route)
