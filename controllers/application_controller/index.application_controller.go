@@ -69,12 +69,28 @@ func UpdateApplication(ctx *gin.Context) {
 		})
 	}
 	appID := uint(appID64)
-	app, err := repository.UpdateApplicationState(appID, appUpdateReq.State)
+	app, err := repository.ChangeApplicationState(appID, appUpdateReq.State)
 	if err != nil {
 		fmt.Println(err)
 	}
 	ctx.JSON(http.StatusOK, gin.H{
 		"message": "data changed successfully.",
 		"data":    &app,
+	})
+}
+
+func GetApplicationGroupedByUserAndState(ctx *gin.Context) {
+	user, _ := ctx.Get("user")
+	userData := user.(models.User)
+	userID := *userData.ID
+	state := ctx.Query("state")
+	println(userID)
+	apps, err := repository.GetApplicationGroupedByUserAndState(userID, state)
+	if err != nil {
+		fmt.Println(err)
+	}
+	ctx.JSON(http.StatusOK, gin.H{
+		"message": "data loaded successfully.",
+		"data":    &apps,
 	})
 }
